@@ -1,0 +1,72 @@
+on:
+  pull_request:
+  push:
+    branches:
+      - 'master'
+
+name: CI
+
+jobs:
+  build_wasm:
+    name: Build (wasm32)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          default: true
+          target: wasm32-unknown-unknown
+          profile: minimal
+      - uses: Swatinem/rust-cache@v1
+      - name: cargo build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --target wasm32-unknown-unknown
+
+  test_firefox:
+    name: unit tests (firefox)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          default: true
+          target: wasm32-unknown-unknown
+          profile: minimal
+
+      - name: wasm-pack-action
+        uses: jetli/wasm-pack-action@v0.3.0
+
+      - name: install firefox
+        uses: browser-actions/setup-firefox@latest
+
+      - uses: Swatinem/rust-cache@v1
+
+      - name: wasm-pack test
+        run: wasm-pack test --firefox --headless
+
+  test_chrome:
+    name: unit tests (chrome)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          default: true
+          target: wasm32-unknown-unknown
+          profile: minimal
+
+      - name: wasm-pack-action
+        uses: jetli/wasm-pack-action@v0.3.0
+
+      - name: install chrome
+        uses: browser-actions/setup-chrome@latest
+
+      - uses: Swatinem/rust-cache@v1
+
+      - name: wasm-pack test
+        run: wasm-pack test --chrome --headless
