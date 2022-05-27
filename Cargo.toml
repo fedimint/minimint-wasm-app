@@ -1,0 +1,8 @@
+[package]
+name = "minimint-wasm"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rexie = "0.4.1"
+wasm-bindgen = "0.2.80"
