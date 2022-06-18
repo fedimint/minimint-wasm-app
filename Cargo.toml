@@ -3,9 +3,26 @@ name = "minimint-wasm"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
+console_error_panic_hook = "0.1.7"
+js-sys = "0.3.57"
+minimint-api = { version = "0.1.0", path = "../minimint/minimint-api" }
+mint-client = { version = "0.1.0", path = "../minimint/mint-client" }
+rand = { version = "0.6.5", features = ["wasm-bindgen"] }
 rexie = "0.4.1"
-wasm-bindgen = "0.2.80"
+serde-wasm-bindgen = "0.4.3"
+wasm-bindgen = { version = "0.2.80", features = ["serde-serialize"] }
+wasm-bindgen-futures = "0.4.30"
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.30"
+
+[patch.crates-io]
+bitcoin_hashes = { version = "0.10.0", git = 'https://github.com/fedimint/bitcoin_hashes', branch = 'minimint' }
+secp256k1 = { git = "https://github.com/fedimint/rust-secp256k1/", branch = "minimint" }
+
+[profile.release]
+debug = true
